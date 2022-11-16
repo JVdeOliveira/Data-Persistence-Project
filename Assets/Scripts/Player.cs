@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float m_speed;
     [SerializeField] private float m_xLimit;
 
-    private bool canMove = true;
+    private bool m_canMove = true;
 
     private void Update()
     {
@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
 
     private void Movement()
     {
-        if (!canMove) return;
+        if (!m_canMove) return;
 
         var horizontal = Input.GetAxis("Horizontal");
 
@@ -30,6 +30,6 @@ public class Player : MonoBehaviour
 
         xPos = Mathf.Clamp(xPos, -m_xLimit, m_xLimit);
 
-        transform.position.Set(xPos, transform.position.y, 0);
+        transform.position = new(xPos, transform.position.y, 0);
     }
 }

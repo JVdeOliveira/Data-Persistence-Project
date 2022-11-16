@@ -10,13 +10,15 @@ public class GameController : MonoBehaviour
     private int m_score;
     private int m_highScore;
 
-    private bool lose;
+    private bool m_lose;
 
     public int Score => m_score;
     public int MaxScore => m_highScore;
 
     public event Action<int> OnScoreChanged;
     public event Action<bool> OnHighScoreChanged;
+
+    public event Action OnLose;
 
     private string saveFilePath;
 
@@ -29,6 +31,7 @@ public class GameController : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         saveFilePath = $"{Application.persistentDataPath}/SaveFile.json";
         LoadHighScore();
@@ -36,7 +39,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (lose && Input.GetKeyDown(KeyCode.Space))
+        if (m_lose && Input.GetKeyDown(KeyCode.Space))
         {
             SceneManager.LoadScene(1);
         }
@@ -54,9 +57,18 @@ public class GameController : MonoBehaviour
         if (m_score > m_highScore)
         {
             m_highScore = m_score;
+            SaveHighScore();
         }
 
         OnHighScoreChanged?.Invoke(m_score > m_highScore);
+    }
+
+    public void Lose()
+    {
+        m_lose = true;
+        CheckNewRecord();
+
+        OnLose?.Invoke();
     }
 
     #region Save end Load

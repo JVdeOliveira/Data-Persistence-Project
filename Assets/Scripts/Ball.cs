@@ -27,7 +27,11 @@ public class Ball : MonoBehaviour
 
     private void StartMove()
     {
-        var direction = Vector2.down;
+        var xDir = UnityEngine.Random.Range(-.25f, .25f);
+        var yDir = UnityEngine.Random.Range(-1, -.5f);
+
+        var direction = new Vector2(xDir, yDir).normalized;
+
         m_rigidbody.AddForce(direction * m_startSpeed, ForceMode2D.Impulse);
     }
 
@@ -41,9 +45,12 @@ public class Ball : MonoBehaviour
         m_rigidbody.velocity = velocity;
     }
 
-    private void ResetBall()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        transform.position = Vector2.zero;
         m_rigidbody.velocity = Vector2.zero;
+        m_rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+
+        if (GameController.Instance)
+            GameController.Instance.Lose();
     }
 }

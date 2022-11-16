@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.SceneManagement;
 
 public class GameUIHandler : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class GameUIHandler : MonoBehaviour
 
         GameController.Instance.OnScoreChanged += Instance_OnScoreChanged;
         GameController.Instance.OnHighScoreChanged += Instance_OnHighScoreChanged;
+
+        ScoreText.text = $"Score\n{GameController.Instance.Score}";
     }
 
     private void Instance_OnHighScoreChanged(bool newScore)
@@ -32,11 +35,16 @@ public class GameUIHandler : MonoBehaviour
         else
             highScoreText = $"HighScore\n{GameController.Instance.MaxScore}";
 
-        ScoreText.text = highScoreText;
+        HighText.text = highScoreText;
     }
 
     private void Instance_OnScoreChanged(int score)
     {
         ScoreText.text = $"Score\n{score}";
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

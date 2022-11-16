@@ -9,6 +9,17 @@ public class Player : MonoBehaviour
 
     private bool m_canMove = true;
 
+    private void Start()
+    {
+        if (GameController.Instance)
+            GameController.Instance.OnLose += Instance_OnLose;
+    }
+
+    private void Instance_OnLose()
+    {
+        m_canMove = false;
+    }
+
     private void Update()
     {
         Movement();

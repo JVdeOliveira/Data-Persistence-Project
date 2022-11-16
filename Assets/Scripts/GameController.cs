@@ -1,19 +1,22 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    private static GameController Instance;
+    public static GameController Instance;
 
     private int m_score;
     private int m_highScore;
 
+    private bool lose;
+
     public int Score => m_score;
     public int MaxScore => m_highScore;
 
-    public Action<int> OnScoreChanged;
-    public Action<int> OnHighScoreChanged;
+    public event Action<int> OnScoreChanged;
+    public event Action<bool> OnHighScoreChanged;
 
     private string saveFilePath;
 
@@ -31,20 +34,29 @@ public class GameController : MonoBehaviour
         LoadHighScore();
     }
 
-    public void IncreaseScore()
+    private void Update()
     {
-        m_score++;
+        if (lose && Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(1);
+        }
+    }
+
+    public void IncreaseScore(int amountScore)
+    {
+        m_score += amountScore;
 
         OnScoreChanged?.Invoke(m_score);
     }
 
     public void CheckNewRecord()
     {
-        if (m_score <= m_highScore) return;
+        if (m_score > m_highScore)
+        {
+            m_highScore = m_score;
+        }
 
-        m_highScore = m_score;
-
-        OnHighScoreChanged?.Invoke(m_highScore);
+        OnHighScoreChanged?.Invoke(m_score > m_highScore);
     }
 
     #region Save end Load
